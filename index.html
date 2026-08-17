@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journeyer · 科技探索与产品展示</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-soft: rgba(255, 255, 255, 0.85);
+            --border: rgba(15, 23, 42, 0.08);
+            --border-strong: rgba(15, 23, 42, 0.14);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --accent: #3b82f6;
+            --accent-strong: #2563eb;
+            --accent-soft: rgba(59, 130, 246, 0.08);
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --purple: #8b5cf6;
+            --purple-soft: rgba(139, 92, 246, 0.12);
+            --gradient-hero: linear-gradient(135deg, #eff6ff 0%, #ffffff 40%, #f0fdf4 100%);
+            --gradient-card: linear-gradient(145deg, #ffffff 0%, #fafcff 100%);
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.04);
+            --shadow-lg: 0 8px 32px rgba(59, 130, 246, 0.08), 0 24px 48px rgba(15, 23, 42, 0.06);
+            --font-display: "SF Pro Display", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+            --font-body: "SF Pro Text", "Noto Sans SC", system-ui, sans-serif;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --page-max-width: 1440px;
+            --page-padding: 2rem 2.5rem 3rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.5) 0%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.5) 0%, transparent 75%);
+        }
+
+        .bg-glow-top {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 70vh;
+            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: var(--page-max-width);
+            margin: 0 auto;
+            padding: var(--page-padding);
+        }
+
+        /* 导航 */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: transparent;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s var(--ease-out);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo .logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.3s var(--ease-out);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.35s var(--ease-out);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主内容与壁纸页切换 */
+        .main-content {
+            display: block;
+        }
+        .wallpaper-page {
+            display: none;
+            animation: fadeUp 0.5s var(--ease-out) both;
+        }
+
+        /* 高级推广横幅 */
+        .promo-banner {
+            position: relative;
+            border-radius: 24px;
+            padding: 2.5rem 3rem;
+            margin: 0 0 1.5rem 0;
+            background: linear-gradient(135deg, #0b0f1e 0%, #1a1f3a 40%, #1e1b4b 70%, #2e1065 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease-in-out infinite, fadeUp 0.9s var(--ease-out) both;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 80px rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 2rem;
+            z-index: 2;
+            isolation: isolate;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .promo-banner::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.3) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.35) 0%, transparent 40%);
+            z-index: -1;
+            animation: glowMove 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(4%, 3%) scale(1.05); }
+        }
+
+        .promo-banner::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .promo-content {
+            flex: 1 1 380px;
+            min-width: 280px;
+            color: white;
+            z-index: 1;
+        }
+
+        .promo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #e0e7ff;
+            margin-bottom: 1.2rem;
+        }
+
+        .promo-badge .emoji {
+            font-size: 1.1rem;
+        }
+
+        .promo-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 50%, #ddd6fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .promo-desc {
+            font-size: 1rem;
+            color: #cbd5e1;
+            max-width: 40em;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .promo-desc strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .promo-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .btn-promo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.8rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.35s var(--ease-smooth);
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+            white-space: nowrap;
+        }
+
+        .btn-promo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.55);
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+        }
+
+        .btn-promo-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.35s var(--ease-smooth);
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            white-space: nowrap;
+        }
+
+        .btn-promo-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        .promo-visual {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .promo-rocket {
+            font-size: 4.5rem;
+            filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.7));
+            animation: rocketFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .promo-orbit {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.25);
+            animation: spin 12s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .promo-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+            color: #f0f0ff;
+            font-weight: 500;
+            margin-top: 0.75rem;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 2.5rem 0 3rem;
+            animation: fadeUp 0.8s var(--ease-out) 0.2s both;
+            display: flex;
+            flex-direction: column;
+            gap: 2.2rem;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-content {
+            max-width: 850px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1.1rem;
+            border-radius: 100px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+        }
+
+        .badge .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 40em;
+            margin-bottom: 1.75rem;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.9rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.6rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.35s var(--ease-smooth);
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+        }
+        .btn-primary:hover {
+            background: var(--accent-strong);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-secondary);
+            border-color: var(--border-strong);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        /* 大模型展示 */
+        .model-showcase {
+            background: var(--gradient-card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 3rem;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.9s var(--ease-out) 0.35s both;
+        }
+
+        .model-showcase::before {
+            content: "";
+            position: absolute;
+            top: -60%;
+            right: -20%;
+            width: 55%;
+            height: 160%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .model-visual {
+            flex: 1 1 300px;
+            min-width: 240px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .model-circle {
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .model-circle svg {
+            width: 78px;
+            height: 78px;
+            stroke: #fff;
+            stroke-width: 1.2;
+            fill: none;
+        }
+
+        .model-orbits {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+            animation: spin 20s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .model-info {
+            flex: 2 1 420px;
+            min-width: 280px;
+        }
+
+        .model-info .label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .model-info h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.75rem;
+        }
+
+        .model-info p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            max-width: 34em;
+        }
+
+        .model-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .model-stat {
+            text-align: left;
+        }
+        .model-stat .num {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+        .model-stat .label {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* 分区标题 */
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 4rem 0 1.75rem;
+            animation: fadeUp 0.8s var(--ease-out) 0.25s both;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+
+        .section-header .count {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            letter-spacing: 0.04em;
+        }
+
+        /* 项目横排 */
+        .projects-horizontal {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1.2rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            animation: fadeUp 0.9s var(--ease-out) 0.45s both;
+        }
+
+        .projects-horizontal::-webkit-scrollbar {
+            height: 6px;
+        }
+        .projects-horizontal::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 100px;
+        }
+        .projects-horizontal::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 100px;
+        }
+        .projects-horizontal::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .project-card {
+            flex: 0 0 260px;
+            scroll-snap-align: start;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s var(--ease-smooth);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.4s var(--ease-out);
+        }
+
+        .project-card:hover {
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.25rem;
+            transition: all 0.3s var(--ease-out);
+        }
+
+        .project-card:hover .project-icon {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .project-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent);
+            stroke-width: 1.5;
+            fill: none;
+            transition: stroke 0.3s var(--ease-out);
+        }
+
+        .project-card:hover .project-icon svg {
+            stroke: #fff;
+        }
+
+        .project-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+
+        .project-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .project-card .domain {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 500;
+            border-top: 1px solid var(--border);
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-card .domain .arrow {
+            opacity: 0.5;
+            transition: all 0.3s var(--ease-out);
+        }
+        .project-card:hover .domain .arrow {
+            opacity: 1;
+            transform: translateX(4px);
+            color: var(--accent);
+        }
+
+        /* 滚动图片区域 */
+        .scroll-gallery-section {
+            margin-top: 4rem;
+            animation: fadeUp 0.9s var(--ease-out) 0.55s both;
+        }
+
+        .scroll-gallery-section .section-header {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .scroll-gallery-container {
+            position: relative;
+            max-width: 1100px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            background: var(--surface-soft);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            padding: 0.8rem 0;
+        }
+
+        .scroll-gallery-track {
+            display: flex;
+            gap: 0.8rem;
+            width: max-content;
+            animation: scrollImages 30s linear infinite;
+        }
+
+        @keyframes scrollImages {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .scroll-gallery-container:hover .scroll-gallery-track {
+            animation-play-state: paused;
+        }
+
+        .gallery-image {
+            flex: 0 0 auto;
+            width: 210px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.03);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 壁纸独立页面 */
+        .wallpaper-page {
+            padding: 2rem 0;
+        }
+        .wallpaper-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .wallpaper-page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.3rem;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border-strong);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out);
+        }
+        .btn-back:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .wallpaper-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .wallpaper-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            aspect-ratio: 3/4;
+            background: #f1f5f9;
+            transition: all 0.4s var(--ease-smooth);
+            cursor: pointer;
+        }
+
+        .wallpaper-item:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-strong);
+        }
+
+        .wallpaper-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s var(--ease-out);
+            display: block;
+            loading: lazy;
+        }
+
+        .wallpaper-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .wallpaper-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%);
+            opacity: 0;
+            transition: opacity 0.4s var(--ease-out);
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            pointer-events: none;
+        }
+        .wallpaper-item:hover .overlay {
+            opacity: 1;
+        }
+
+        /* 灯箱 */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .lightbox-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .btn-lightbox {
+            padding: 0.7rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-download {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.3);
+        }
+        .btn-download:hover {
+            background: var(--accent-strong);
+            transform: translateY(-2px);
+        }
+        .btn-close-lightbox {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .btn-close-lightbox:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* 底部 */
+        footer {
+            margin-top: 4rem;
+            padding: 2rem 0 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            animation: fadeUp 0.8s var(--ease-out) 0.6s both;
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.03em;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s var(--ease-out);
+        }
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            :root {
+                --page-max-width: 100%;
+                --page-padding: 1.5rem 1.5rem 2.5rem;
+            }
+            .promo-banner {
+                padding: 2rem 2rem;
+            }
+            .project-card {
+                flex: 0 0 240px;
+            }
+            .wallpaper-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --page-padding: 1rem 1rem 2rem;
+            }
+            .promo-banner {
+                padding: 1.5rem 1.25rem;
+                gap: 1.5rem;
+                flex-direction: column;
+                text-align: center;
+            }
+            .promo-title {
+                font-size: 1.7rem;
+            }
+            .promo-desc {
+                font-size: 0.9rem;
+            }
+            .promo-actions {
+                justify-content: center;
+            }
+            .promo-visual {
+                order: -1;
+            }
+            .hero {
+                padding: 1.5rem 0 2rem;
+                gap: 1.5rem;
+            }
+            .model-showcase {
+                padding: 2rem 1.5rem;
+                gap: 1.5rem;
+                flex-direction: column;
+                text-align: center;
+            }
+            .model-stats {
+                justify-content: center;
+                gap: 1.5rem;
+            }
+            .model-info .label,
+            .model-info h2,
+            .model-info p {
+                text-align: center;
+            }
+            .nav-links {
+                gap: 1.25rem;
+            }
+            .projects-horizontal {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                gap: 1rem;
+            }
+            .project-card {
+                flex: 0 0 220px;
+                padding: 1.4rem;
+            }
+            .section-header {
+                margin-top: 2.8rem;
+            }
+            .scroll-gallery-container {
+                max-width: 100%;
+                padding: 0.5rem 0;
+            }
+            .gallery-image {
+                width: 160px;
+                height: 105px;
+            }
+            .wallpaper-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.8rem;
+            }
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .promo-banner {
+                border-radius: 16px;
+            }
+            .promo-title {
+                font-size: 1.4rem;
+            }
+            .btn-promo, .btn-promo-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .model-circle {
+                width: 140px;
+                height: 140px;
+            }
+            .model-circle svg {
+                width: 56px;
+                height: 56px;
+            }
+            .project-card {
+                flex: 0 0 200px;
+            }
+            .wallpaper-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 100px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 100px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        ::selection {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow-top" aria-hidden="true"></div>
+    <canvas id="particleCanvas" class="particle-canvas" aria-hidden="true"></canvas>
+
+    <div class="page">
+        <!-- 导航 -->
+        <nav class="top-nav">
+            <a href="#" class="logo" id="logo-link">
+                <span class="logo-mark">J</span>
+                Journeyer
+            </a>
+            <ul class="nav-links">
+                <li><a href="#models">大模型</a></li>
+                <li><a href="#projects">项目</a></li>
+                <li><a href="#gallery">图集</a></li>
+                <li><a href="#wallpaper-nav" id="wallpaper-nav-link">壁纸图库</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </nav>
+
+        <!-- 主内容区域 -->
+        <div id="main-content">
+            <!-- 智谱大模型限时注册福利横幅 -->
+            <div class="promo-banner">
+                <div class="promo-content">
+                    <span class="promo-badge">
+                        <span class="emoji">🚀</span> 限时注册福利
+                    </span>
+                    <h2 class="promo-title">智谱大模型 · 新一代旗舰 GLM-5.2</h2>
+                    <p class="promo-desc">
+                        智谱大模型开放平台 <strong>BigModel.cn</strong> 全新上线！推理、代码、智能体综合能力达开源模型 <strong>SOTA</strong> 水平。
+                        立领 <strong>2000万 Tokens</strong> 超大体验礼包，免费打造 AI 应用，畅享顶尖模型能力！
+                    </p>
+                    <div class="promo-actions">
+                        <a href="https://www.bigmodel.cn/invite?icode=%2B%2BsZkTg0ow3WxH7KTSf%2F1EjPr3uHog9F4g5tjuOUqno%3D" target="_blank" rel="noopener noreferrer" class="btn-promo">
+                            🎁 立即领取福利
+                        </a>
+                        <a href="https://www.bigmodel.cn/invite?icode=%2B%2BsZkTg0ow3WxH7KTSf%2F1EjPr3uHog9F4g5tjuOUqno%3D" target="_blank" rel="noopener noreferrer" class="btn-promo-secondary">
+                            了解 GLM-5.2
+                        </a>
+                    </div>
+                </div>
+                <div class="promo-visual">
+                    <div class="promo-orbit"></div>
+                    <span class="promo-rocket">🚀</span>
+                </div>
+            </div>
+
+            <!-- Hero -->
+            <header class="hero">
+                <div class="hero-content">
+                    <span class="badge">
+                        <span class="pulse"></span>
+                        最新发布 · AI 驱动
+                    </span>
+                    <h1>探索<span class="highlight">科技</span>，<br>构建智能未来</h1>
+                    <p class="subtitle">专注前沿大模型应用与高效工具开发，将人工智能融入产品体验，让技术真正服务于创造。</p>
+                    <div class="hero-actions">
+                        <a href="#models" class="btn-primary">
+                            查看最新模型
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </a>
+                        <a href="#projects" class="btn-secondary">浏览项目</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 大模型展示 -->
+            <section id="models" class="model-showcase">
+                <div class="model-visual">
+                    <div class="model-circle">
+                        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="20" stroke="white" stroke-width="2" stroke-dasharray="4 4" />
+                            <circle cx="32" cy="32" r="10" stroke="white" stroke-width="2" />
+                            <circle cx="32" cy="32" r="3" fill="white" />
+                            <path d="M32 12v-6M32 58v-6M12 32H6M58 32h-6M18 18l-4-4M46 46l4 4M46 18l-4-4M18 46l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="model-orbits" aria-hidden="true"></div>
+                </div>
+                <div class="model-info">
+                    <span class="label">Journeyer AI · 多模态大模型 v2.0</span>
+                    <h2>更懂你的智能引擎</h2>
+                    <p>集成视觉、语言、代码理解能力，面向开发者和创作者的轻量级推理模型。低延迟、高精度，提供开放 API 与本地化部署方案。</p>
+                    <div class="model-stats">
+                        <div class="model-stat">
+                            <div class="num">7B</div>
+                            <div class="label">参数规模</div>
+                        </div>
+                        <div class="model-stat">
+                            <div class="num">128K</div>
+                            <div class="label">上下文长度</div>
+                        </div>
+                        <div class="model-stat">
+                            <div class="num">93%</div>
+                            <div class="label">基准得分</div>
+                        </div>
+                        <div class="model-stat">
+                            <div class="num">&lt;200ms</div>
+                            <div class="label">平均响应</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-primary" style="padding:0.6rem 1.3rem;">申请体验</a>
+                </div>
+            </section>
+
+            <!-- 项目横排 -->
+            <div class="section-header" id="projects">
+                <h2>项目与产品</h2>
+                <span class="count">精选产品</span>
+            </div>
+
+            <div class="projects-horizontal">
+                <a href="https://www.kejizhixing.com/" target="_blank" rel="noopener noreferrer" class="project-card">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h8M8 11h6"/></svg>
+                    </div>
+                    <h3>Wang's Notebook</h3>
+                    <p class="desc">技术与生活的思考笔记，记录开发经验、产品洞察与个人成长。</p>
+                    <div class="domain"><span>kejizhixing.com</span><span class="arrow">→</span></div>
+                </a>
+                <a href="https://he.journeyer.dpdns.org/" target="_blank" rel="noopener noreferrer" class="project-card">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+                    </div>
+                    <h3>HtmlToExe 打包器</h3>
+                    <p class="desc">将 HTML 项目一键打包为独立可执行文件，支持 Windows 环境，简化分发流程。</p>
+                    <div class="domain"><span>he.journeyer.dpdns.org</span><span class="arrow">→</span></div>
+                </a>
+                <a href="https://journeyer.dpdns.org/" target="_blank" rel="noopener noreferrer" class="project-card">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M2 9h20M6 6h.01M10 6h.01"/></svg>
+                    </div>
+                    <h3>一键装机助理</h3>
+                    <p class="desc">自动化系统部署工具，简化软件安装与环境配置，适合 IT 运维与个人装机。</p>
+                    <div class="domain"><span>journeyer.dpdns.org</span><span class="arrow">→</span></div>
+                </a>
+                <a href="https://s.journeyer.dpdns.org/" target="_blank" rel="noopener noreferrer" class="project-card">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+                    </div>
+                    <h3>IT 运维装机资源站</h3>
+                    <p class="desc">集中托管常用运维工具、系统镜像与自动化脚本，提升装机部署效率。</p>
+                    <div class="domain"><span>s.journeyer.dpdns.org</span><span class="arrow">→</span></div>
+                </a>
+                <a href="https://d.keijzhixing.dpdns.org/" target="_blank" rel="noopener noreferrer" class="project-card">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><path d="M6 12h6l4-2"/></svg>
+                    </div>
+                    <h3>学习导航站</h3>
+                    <p class="desc">聚合优质技术教程、文档与资源索引，为开发者提供一站式学习路径。</p>
+                    <div class="domain"><span>d.keijzhixing.dpdns.org</span><span class="arrow">→</span></div>
+                </a>
+                <a href="https://www.zhexufang.com/?jou168" target="_blank" rel="noopener noreferrer" class="project-card">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c3.5 3.5 5.5 7 5.5 10.5A5.5 5.5 0 0 1 12 18a5.5 5.5 0 0 1-5.5-5.5C6.5 9 8.5 5.5 12 2z"/><path d="M8 12c1.5 2 2.5 2.5 4 2.5s2.5-.5 4-2.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+                    </div>
+                    <h3>免费搭建网站</h3>
+                    <p class="desc">无需代码，在线免费创建个人或企业网站，快速上线，轻松管理。</p>
+                    <div class="domain"><span>zhexufang.com</span><span class="arrow">→</span></div>
+                </a>
+            </div>
+
+            <!-- 滚动图片区域1：精彩图集 -->
+            <section class="scroll-gallery-section" id="gallery">
+                <div class="section-header">
+                    <h2>精彩图集</h2>
+                    <span class="count">精选图集</span>
+                </div>
+                <div class="scroll-gallery-container">
+                    <div class="scroll-gallery-track">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t011bf3fdea74bdd840.jpg" alt="滚动图片1" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t011d84eb1611543e8e.jpg" alt="滚动图片2" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012a97a62445a2ef0a.jpg" alt="滚动图片3" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012a3165c761d6a666.jpg" alt="滚动图片4" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012da5db0c526bd0ab.jpg" alt="滚动图片5" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012fee75187b20ea60.jpg" alt="滚动图片6" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%87-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t011bf3fdea74bdd840.jpg" alt="滚动图片1" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t011d84eb1611543e8e.jpg" alt="滚动图片2" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012a97a62445a2ef0a.jpg" alt="滚动图片3" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012a3165c761d6a666.jpg" alt="滚动图片4" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012da5db0c526bd0ab.jpg" alt="滚动图片5" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-%E7%BE%8E%E5%A5%B3%E5%9B%BE%E7%89%87/t012fee75187b20ea60.jpg" alt="滚动图片6" class="gallery-image" loading="lazy">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 滚动图片区域2：4K高清壁纸（已替换第5张并新增4张） -->
+            <section class="scroll-gallery-section" id="wallpaper">
+                <div class="section-header">
+                    <h2>4K 高清壁纸</h2>
+                    <span class="count">精选壁纸</span>
+                </div>
+                <div class="scroll-gallery-container">
+                    <div class="scroll-gallery-track">
+                        <!-- 第一组 -->
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/071312beqgq.jpg" alt="壁纸1" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/070529KdgfN.jpg" alt="壁纸2" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%87%E7%89%871080P/070601kQFOg.jpg" alt="壁纸3" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/071641j4bR9.jpg" alt="壁纸4" class="gallery-image" loading="lazy">
+                        <!-- 替换第5张 -->
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/084022lwllw.jpg" alt="壁纸5" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072505yTyhe.jpg" alt="壁纸6" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072507MfAb3.jpg" alt="壁纸7" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/073040LDd3H.jpg" alt="壁纸8" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/073939DthIR.jpg" alt="壁纸9" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074202KwedG.jpg" alt="壁纸10" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074512TMI3d.jpg" alt="壁纸11" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074810nejio.jpg" alt="壁纸12" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074912THHsw.jpg" alt="壁纸13" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075117IyyhZ.jpg" alt="壁纸14" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075319HOFQT.jpg" alt="壁纸15" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075319nuW4d.jpg" alt="壁纸16" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075628n8DDK.jpg" alt="壁纸17" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/080126FfZWL.jpg" alt="壁纸18" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/080827E4BYp.jpg" alt="壁纸19" class="gallery-image" loading="lazy">
+                        <!-- 新增4张 -->
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/084859gk6lg.jpg" alt="壁纸20" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085110FqUcX.jpg" alt="壁纸21" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085655Jk0Vy.jpg" alt="壁纸22" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085622p51iH.jpg" alt="壁纸23" class="gallery-image" loading="lazy">
+                        <!-- 第二组（复制完整第一组，确保无缝滚动） -->
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/071312beqgq.jpg" alt="壁纸1" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/070529KdgfN.jpg" alt="壁纸2" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/070601kQFOg.jpg" alt="壁纸3" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/071641j4bR9.jpg" alt="壁纸4" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/084022lwllw.jpg" alt="壁纸5" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072505yTyhe.jpg" alt="壁纸6" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072507MfAb3.jpg" alt="壁纸7" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/073040LDd3H.jpg" alt="壁纸8" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/073939DthIR.jpg" alt="壁纸9" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074202KwedG.jpg" alt="壁纸10" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074512TMI3d.jpg" alt="壁纸11" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074810nejio.jpg" alt="壁纸12" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074912THHsw.jpg" alt="壁纸13" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075117IyyhZ.jpg" alt="壁纸14" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075319HOFQT.jpg" alt="壁纸15" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075319nuW4d.jpg" alt="壁纸16" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075628n8DDK.jpg" alt="壁纸17" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/080126FfZWL.jpg" alt="壁纸18" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/080827E4BYp.jpg" alt="壁纸19" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/084859gk6lg.jpg" alt="壁纸20" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085110FqUcX.jpg" alt="壁纸21" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085655Jk0Vy.jpg" alt="壁纸22" class="gallery-image" loading="lazy">
+                        <img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085622p51iH.jpg" alt="壁纸23" class="gallery-image" loading="lazy">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 底部 -->
+            <footer id="contact">
+                <p class="footer-text">© 2026 Journeyer · 保持创造，持续进化</p>
+                <div class="footer-links">
+                    <a href="https://www.kejizhixing.com/" target="_blank">技术博客</a>
+                    <a href="mailto:journeyer2026@163.com">邮件联系</a>
+                    <a href="#models">大模型</a>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 壁纸独立页面 -->
+        <div id="wallpaper-page" class="wallpaper-page">
+            <div class="wallpaper-page-header">
+                <h1>壁纸大图展示</h1>
+                <button class="btn-back" id="btn-back-main">返回主页</button>
+            </div>
+            <div class="wallpaper-grid">
+                <!-- 壁纸图库：第17张已替换为 091027QqvuL.jpg -->
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/071312beqgq.jpg" alt="壁纸1" loading="lazy"><div class="overlay">壁纸 1</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/070529KdgfN.jpg" alt="壁纸2" loading="lazy"><div class="overlay">壁纸 2</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/070601kQFOg.jpg" alt="壁纸3" loading="lazy"><div class="overlay">壁纸 3</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/071641j4bR9.jpg" alt="壁纸4" loading="lazy"><div class="overlay">壁纸 4</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%87-4K%E5%9B%85%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072112FXB4z.jpg" alt="壁纸5" loading="lazy"><div class="overlay">壁纸 5</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072505yTyhe.jpg" alt="壁纸6" loading="lazy"><div class="overlay">壁纸 6</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/072507MfAb3.jpg" alt="壁纸7" loading="lazy"><div class="overlay">壁纸 7</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/073040LDd3H.jpg" alt="壁纸8" loading="lazy"><div class="overlay">壁纸 8</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/073939DthIR.jpg" alt="壁纸9" loading="lazy"><div class="overlay">壁纸 9</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074202KwedG.jpg" alt="壁纸10" loading="lazy"><div class="overlay">壁纸 10</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074512TMI3d.jpg" alt="壁纸11" loading="lazy"><div class="overlay">壁纸 11</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074810nejio.jpg" alt="壁纸12" loading="lazy"><div class="overlay">壁纸 12</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/074912THHsw.jpg" alt="壁纸13" loading="lazy"><div class="overlay">壁纸 13</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075117IyyhZ.jpg" alt="壁纸14" loading="lazy"><div class="overlay">壁纸 14</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075319HOFQT.jpg" alt="壁纸15" loading="lazy"><div class="overlay">壁纸 15</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/075319nuW4d.jpg" alt="壁纸16" loading="lazy"><div class="overlay">壁纸 16</div></div>
+                <!-- 第17张替换为新的 -->
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/091027QqvuL.jpg" alt="壁纸17" loading="lazy"><div class="overlay">壁纸 17</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/080126FfZWL.jpg" alt="壁纸18" loading="lazy"><div class="overlay">壁纸 18</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/080827E4BYp.jpg" alt="壁纸19" loading="lazy"><div class="overlay">壁纸 19</div></div>
+                <!-- 加入新增图片到壁纸图库 -->
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/084859gk6lg.jpg" alt="壁纸20" loading="lazy"><div class="overlay">壁纸 20</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085110FqUcX.jpg" alt="壁纸21" loading="lazy"><div class="overlay">壁纸 21</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085655Jk0Vy.jpg" alt="壁纸22" loading="lazy"><div class="overlay">壁纸 22</div></div>
+                <div class="wallpaper-item"><img src="https://hefollo.com/%E7%94%B5%E8%84%91%E7%AB%AF-4K%E5%9B%BE%E7%89%87/4K%E7%BE%8E%E5%A5%B3%E5%A3%81%E7%BA%B8%E5%9B%BE%E7%89%871080P/085622p51iH.jpg" alt="壁纸23" loading="lazy"><div class="overlay">壁纸 23</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 灯箱 -->
+    <div class="lightbox" id="lightbox">
+        <img id="lightbox-img" src="" alt="壁纸大图">
+        <div class="lightbox-actions">
+            <a href="#" class="btn-lightbox btn-download" id="btn-download" download>下载原图</a>
+            <button class="btn-lightbox btn-close-lightbox" id="btn-close-lightbox">关闭</button>
+        </div>
+    </div>
+
+    <!-- AI 颗粒粒子效果 -->
+    <script>
+        (function() {
+            const canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            const particles = [];
+            const particleCount = window.innerWidth < 768 ? 40 : 80;
+            const maxDistance = 120;
+            const colors = ['59,130,246', '139,92,246', '99,102,241'];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.3;
+                    this.vy = (Math.random() - 0.5) * 0.3;
+                    this.radius = Math.random() * 1.5 + 0.5;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.alpha = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function drawLines() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < maxDistance) {
+                            const opacity = (1 - dist / maxDistance) * 0.3;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(99,102,241, ${opacity})`;
+                            ctx.lineWidth = 0.4;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                for (const p of particles) {
+                    p.update();
+                    p.draw();
+                }
+                drawLines();
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', () => {
+                resize();
+                particles.forEach(p => {
+                    if (p.x > width) p.x = width;
+                    if (p.y > height) p.y = height;
+                });
+            });
+
+            resize();
+            initParticles();
+            animate();
+        })();
+    </script>
+
+    <script>
+        (function() {
+            const mainContent = document.getElementById('main-content');
+            const wallpaperPage = document.getElementById('wallpaper-page');
+            const wallpaperNavLink = document.getElementById('wallpaper-nav-link');
+            const btnBackMain = document.getElementById('btn-back-main');
+            const logoLink = document.getElementById('logo-link');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const btnDownload = document.getElementById('btn-download');
+            const btnCloseLightbox = document.getElementById('btn-close-lightbox');
+
+            // 切换到壁纸页
+            wallpaperNavLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainContent.style.display = 'none';
+                wallpaperPage.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 返回主页
+            btnBackMain.addEventListener('click', () => {
+                wallpaperPage.style.display = 'none';
+                mainContent.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 点击logo也返回主页（如果当前在壁纸页）
+            logoLink.addEventListener('click', (e) => {
+                if (wallpaperPage.style.display === 'block') {
+                    e.preventDefault();
+                    wallpaperPage.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            // 灯箱功能：点击壁纸图片放大
+            const wallpaperItems = document.querySelectorAll('.wallpaper-item');
+            wallpaperItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const imgSrc = item.querySelector('img').getAttribute('src');
+                    lightboxImg.src = imgSrc;
+                    btnDownload.href = imgSrc;
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            // 关闭灯箱
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                lightboxImg.src = '';
+                btnDownload.href = '#';
+            }
+
+            btnCloseLightbox.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // 键盘ESC关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                    closeLightbox();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
